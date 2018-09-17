@@ -1,5 +1,6 @@
 <?php
 
+use kartik\datetime\DateTimePicker;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -14,9 +15,19 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'start')->textInput() ?>
+    <?= $form->field($model, 'start')->widget(DateTimePicker::class, [
+        'options' => ['placeholder' => Yii::t('main', 'Game Start')],
+        'pluginOptions' => [
+            'autoclose' => true
+        ]
+    ]) ?>
 
-    <?= $form->field($model, 'end')->textInput() ?>
+    <?= $form->field($model, 'end')->widget(DateTimePicker::class, [
+        'options' => ['placeholder' => Yii::t('main', 'Game End')],
+        'pluginOptions' => [
+            'autoclose' => true
+        ]
+    ]) ?>
 
     <?= $form->field($model, 'conversion_rate')->textInput() ?>
 

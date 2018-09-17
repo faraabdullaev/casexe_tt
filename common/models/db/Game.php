@@ -37,7 +37,7 @@ class Game extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name', 'conversion_rate', 'money_share', 'gift_share', 'bonus_share'], 'required'],
             [['start', 'end'], 'safe'],
             [['conversion_rate'], 'number'],
             [['money_balance', 'money_from', 'money_to', 'bonus_from', 'bonus_to', 'money_share', 'gift_share', 'bonus_share'], 'integer'],
