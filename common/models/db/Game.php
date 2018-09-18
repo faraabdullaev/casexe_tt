@@ -20,9 +20,12 @@ use Yii;
  * @property int $money_share
  * @property int $gift_share
  * @property int $bonus_share
+ * @property boolean $is_active
  */
 class Game extends \yii\db\ActiveRecord
 {
+    const MAX_PERCENT = 100;
+
     /**
      * {@inheritdoc}
      */
@@ -38,14 +41,15 @@ class Game extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'conversion_rate', 'money_share', 'gift_share', 'bonus_share'], 'required'],
-            [['start', 'end'], 'safe'],
+            [['start', 'end', 'is_active'], 'safe'],
             [['conversion_rate'], 'number'],
             [['money_balance', 'money_from', 'money_to', 'bonus_from', 'bonus_to', 'money_share', 'gift_share', 'bonus_share'], 'integer'],
             [['name'], 'string', 'max' => 100],
+            [['is_active'], 'boolean'],
 
             [['money_share', 'gift_share', 'bonus_share'], function ($attribute) {
                 $sum = $this->money_share + $this->gift_share + $this->bonus_share;
-                if ($sum !== 100) {
+                if ($sum !== self::MAX_PERCENT) {
                     $this->addError($attribute, Yii::t('app', 'The sum of `money_share`, `gift_share` & `bonus_share` must be equal to 100'));
                 }
             }],
@@ -71,6 +75,7 @@ class Game extends \yii\db\ActiveRecord
             'money_share' => Yii::t('app', 'Money Share'),
             'gift_share' => Yii::t('app', 'Gift Share'),
             'bonus_share' => Yii::t('app', 'Bonus Share'),
+            'is_active' => Yii::t('app', 'Active'),
         ];
     }
 }

@@ -1,53 +1,125 @@
 <?php
 
 /* @var $this yii\web\View */
+$this->title = 'My Application';
 
-$this->title = 'My Yii Application';
+$js = <<<JS
+const HTTP_STATUS_OK = 200;
+
+const PRIZE_TYPE_BONUS = 0;
+const PRIZE_TYPE_GIFT = 1;
+const PRIZE_TYPE_MONEY = 2;
+
+const httpPost = function (actionUrl, data, success, error) {
+    $.ajax({
+        url: actionUrl,
+        method: 'POST',
+        data: data,
+        error: error,
+        success: success
+    });
+};
+
+const httpGet = function (actionUrl, success, error) {
+    $.ajax({
+        url: actionUrl,
+        method: 'GET',
+        error: error,
+        success: success
+    });
+};
+
+const hideAllContainers = function() {
+  $('#offer-gift, #loading, .prize').hide();
+};
+
+const loadingVisibility = function(show) {
+  hideAllContainers();
+  if (show)
+      return $('#loading').show();
+  $('#loading').hide();
+};
+
+function getLastPrize() {
+  loadingVisibility(true);
+  httpGet('/gift/index',
+    function (prize) {
+      loadingVisibility(false);
+      showPrizeContainer(prize);
+    },
+    function (error) {
+      if (error.status === HTTP_STATUS_OK) {
+          loadingVisibility(false);
+          showOfferContainer();
+      }
+    }
+  );
+}
+
+function showOfferContainer() {
+  $('#offer-gift').show();
+}
+
+function showPrizeContainer(prize) {
+    var resultHtml =  '';
+  if (prize.prize_type === PRIZE_TYPE_BONUS) {
+    var template = $('script[data-template="bonus"]');
+    var templateHtml = template.html();
+    resultHtml = templateHtml.replace(/{{prize_value}}/g, prize.prize_value);
+  }
+  
+  $('#prize').html(resultHtml);
+}
+
+function onPlayNowButtonClick() {
+    loadingVisibility(true);
+    httpPost('/gift/index', {},
+    function (prize) {
+      loadingVisibility(false);
+      showPrizeContainer(prize);
+    },
+    function (error) {
+    }
+  );
+}
+
+getLastPrize();
+JS;
+
+$this->registerJs($js, $this::POS_END);
 ?>
+
 <div class="site-index">
+    <div id="offer-gift">
+        <div class="jumbotron">
+            <h1>Lorem ipsum dolor sit amet!</h1>
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur commodi, corporis cupiditate dicta
+                dolorum expedita impedit iure quo ratione repudiandae sequi soluta tempore, tenetur. Aut est impedit
+                quas rerum temporibus.
+            </p>
+            <p>Alias architecto, dolorem dolores eius excepturi facere totam! Distinctio doloribus ea earum eligendi
+                excepturi fugit maxime, quas, similique tenetur totam voluptas voluptatem? Commodi earum facere itaque
+                nemo sint? Aliquid, similique.
+            </p>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+            <br>
+            <button class="btn btn-success" onclick="onPlayNowButtonClick()">Play now!</button>
         </div>
-
     </div>
+    <div id="loading" class="text-center">
+        <img src="/images/loading.gif" alt="">
+    </div>
+
+    <div id="prize"></div>
 </div>
+
+
+<script type="text/template" data-template="bonus">
+    <h1>You win: {{prize_value}} bonus point!!!</h1>
+
+</script>
+
+<script type="text/template" data-template="gift"></script>
+
+<script type="text/template" data-template="money"></script>
