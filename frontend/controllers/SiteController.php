@@ -1,6 +1,8 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\db\LoyaltyCard;
+use frontend\models\Profile;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -26,7 +28,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup', 'index'],
+                'only' => ['logout', 'signup', 'index', 'profile'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -34,7 +36,7 @@ class SiteController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['index', 'logout'],
+                        'actions' => ['index', 'logout', 'profile'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -129,6 +131,31 @@ class SiteController extends Controller
         } else {
             return $this->render('contact', [
                 'model' => $model,
+            ]);
+        }
+    }
+
+
+    public function actionProfile()
+    {
+        $app = Yii::$app;
+        $model = new Profile();
+        $model->setAttributes($app->user->identity->attributes, false);
+
+        if ($model->load($app->request->post()) && $model->validate()) {
+            if ($model->save()) {
+                $app->session->setFlash('success', 'Profile successfully updated.');
+            } else {
+                $app->session->setFlash('error', 'There was an error saving your profile.');
+            }
+
+            return $this->refresh();
+        } else {
+            $card = LoyaltyCard::findOrCreateUserCard($app->user->identity);
+            return $this->render('profile', [
+                'model' => $model,
+                'card' => $card,
+                'user' => $app->user->identity,
             ]);
         }
     }
