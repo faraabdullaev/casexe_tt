@@ -110,6 +110,11 @@ class PrizeReceiver extends \yii\db\ActiveRecord
         return $this->hasOne(Game::class, ['id' => 'game_id']);
     }
 
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
     public function refusePrizeAndUpdateGameBalance()
     {
         $this->prize_status = self::STATUS_IS_DECLINED;
@@ -136,6 +141,16 @@ class PrizeReceiver extends \yii\db\ActiveRecord
             $this->prize_status = self::STATUS_IS_PROCESSED;
         }
 
+        $this->save();
+    }
+
+    public function convertMoneyToBonus()
+    {
+        $card = LoyaltyCard::findOrCreateUserCard($this->user);
+        $card->balance  += floor($this->prize_value * $this->game->conversion_rate);
+        $card->save();
+
+        $this->prize_status = self::STATUS_IS_PROCESSED;
         $this->save();
     }
 }

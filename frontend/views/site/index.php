@@ -61,14 +61,24 @@ function showOfferContainer() {
 }
 
 function showPrizeContainer(prize) {
-    var resultHtml =  '';
+  var template = null;
+  
   if (prize.prize_type === PRIZE_TYPE_BONUS) {
-    var template = $('script[data-template="bonus"]');
-    var templateHtml = template.html();
-    resultHtml = templateHtml.replace(/{{prize_value}}/g, prize.prize_value)
-                             .replace(/{{id}}/g, prize.id);
+    template = $('script[data-template="bonus"]');
   }
   
+  if (prize.prize_type === PRIZE_TYPE_MONEY) {
+    template = $('script[data-template="money"]');
+  }
+  
+  if (!template)
+      return;
+  
+  var templateHtml = template.html();
+  var resultHtml =  '';
+  resultHtml = templateHtml.replace(/{{prize_value}}/g, prize.prize_value)
+                           .replace(/{{prize_type}}/g, prize.prize_type)
+                           .replace(/{{id}}/g, prize.id);
   $('#prize').html(resultHtml).show();
 }
 
@@ -98,14 +108,39 @@ function refuse(prize_id) {
   );
 }
 
-function accept(prize_id) {
+function accept(prize_id, prize_type) {
+  if (prize_type === PRIZE_TYPE_MONEY) {
+      alert('Make sure you\'ve added your bank account to profile!');
+  }
+  if (prize_type === PRIZE_TYPE_GIFT) {
+      alert('Make sure you\'ve added your address to profile!');
+  }
+  
   loadingVisibility(true);
-    httpGet('/gift/accept/' + prize_id,
+
+  httpGet('/gift/accept/' + prize_id,
     function (prize) {
       loadingVisibility(false);
       showOfferContainer();
     },
     function (error) {}
+  );
+}
+
+function convertToBonus(prize_id) {
+  if (!confirm('Are you sure?'))
+    return;
+
+  loadingVisibility(true);
+  httpGet('/gift/convert/' + prize_id,
+    function (prize) {
+      loadingVisibility(false);
+      showOfferContainer();
+    },
+    function (error) {
+      loadingVisibility(false);
+      $('#prize').show();
+    }
   );
 }
 
@@ -145,10 +180,15 @@ $this->registerJs($js, $this::POS_END);
 
 <script type="text/template" data-template="bonus">
     <h1>You win: {{prize_value}} bonus point!!!</h1>
-    <button class="btn btn-success" onclick="accept({{id}})">Add to Loyal Card</button>
+    <button class="btn btn-success" onclick="accept({{id}}, {{prize_type}})">Add to Loyal Card</button>
     <button class="btn btn-default" onclick="refuse({{id}})">Refuse</button>
 </script>
 
 <script type="text/template" data-template="gift"></script>
 
-<script type="text/template" data-template="money"></script>
+<script type="text/template" data-template="money">
+    <h1>You win MONEY: {{prize_value}} $$$!!!</h1>
+    <button class="btn btn-success" onclick="accept({{id}}, {{prize_type}})">Sent to My Bank Account</button>
+    <button class="btn btn-primary" onclick="convertToBonus({{id}})">Add to Loyal Card</button>
+    <button class="btn btn-default" onclick="refuse({{id}})">Refuse</button>
+</script>

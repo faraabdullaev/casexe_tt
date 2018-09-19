@@ -114,4 +114,22 @@ class GiftController extends Controller
             return null;
         }
     }
+
+    public function actionConvert($id)
+    {
+        /** @var PrizeReceiver $model */
+        if (!($model = PrizeReceiver::findOne(['id' => $id, 'prize_type' => PrizeReceiver::PRIZE_TYPE_IS_MONEY])))
+            return null;
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model->convertMoneyToBonus();
+            $transaction->commit();
+            return $id;
+        } catch (Exception $exception) {
+            $transaction->rollBack();
+            var_dump($exception->getMessage()); exit;
+            return null;
+        }
+    }
 }
