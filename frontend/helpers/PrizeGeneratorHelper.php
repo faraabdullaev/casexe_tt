@@ -11,6 +11,7 @@ namespace frontend\helpers;
 
 use common\models\db\Game;
 use common\models\db\Gift;
+use common\models\db\LoyaltyCard;
 use common\models\db\PrizeReceiver;
 use yii\db\Expression;
 
@@ -33,6 +34,7 @@ class PrizeGeneratorHelper
             return PrizeReceiver::PRIZE_TYPE_IS_GIFT;
 
         return PrizeReceiver::PRIZE_TYPE_IS_BONUS;
+//        return PrizeReceiver::PRIZE_TYPE_IS_MONEY;
     }
 
     /**

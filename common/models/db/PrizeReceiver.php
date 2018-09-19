@@ -19,6 +19,7 @@ use yii\db\Expression;
  * @property string $created_date
  * @property string $updated_date
  * @property Game $game
+ * @property User $user
  */
 class PrizeReceiver extends \yii\db\ActiveRecord
 {
@@ -124,5 +125,17 @@ class PrizeReceiver extends \yii\db\ActiveRecord
         }
 
         $this->save(false);
+    }
+
+    public function acceptPrize()
+    {
+        $this->prize_status = self::STATUS_IS_ACCEPTED;
+
+        if ($this->prize_type === self::PRIZE_TYPE_IS_BONUS) {
+            LoyaltyCard::updateUserCardByPrize($this);
+            $this->prize_status = self::STATUS_IS_PROCESSED;
+        }
+
+        $this->save();
     }
 }

@@ -81,7 +81,8 @@ class GiftController extends Controller
         return $update_prize_result($last_prize);
     }
 
-    public function actionRefuse($id) {
+    public function actionRefuse($id)
+    {
         /** @var PrizeReceiver $model */
         if (!($model = PrizeReceiver::findOne($id)))
             return null;
@@ -89,6 +90,23 @@ class GiftController extends Controller
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $model->refusePrizeAndUpdateGameBalance();
+            $transaction->commit();
+            return $id;
+        } catch (Exception $exception) {
+            $transaction->rollBack();
+            return null;
+        }
+    }
+
+    public function actionAccept($id)
+    {
+        /** @var PrizeReceiver $model */
+        if (!($model = PrizeReceiver::findOne($id)))
+            return null;
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model->acceptPrize();
             $transaction->commit();
             return $id;
         } catch (Exception $exception) {

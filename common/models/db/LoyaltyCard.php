@@ -36,6 +36,16 @@ class LoyaltyCard extends \yii\db\ActiveRecord
         return $model;
     }
 
+    public static function updateUserCardByPrize($prize)
+    {
+        $card = self::findOne(['user_id' => $prize->user_id]);
+        if (!$card)
+            $card = self::openNewCardToUser($prize->user);
+
+        $card->balance += $prize->prize_value;
+        $card->save(false);
+    }
+
     /**
      * {@inheritdoc}
      */

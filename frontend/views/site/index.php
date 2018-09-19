@@ -90,17 +90,23 @@ function refuse(prize_id) {
   
   loadingVisibility(true);
     httpGet('/gift/refuse/' + prize_id,
+    function () {
+      loadingVisibility(false);
+      showOfferContainer();
+    },
+    function (error) {}
+  );
+}
+
+function accept(prize_id) {
+  loadingVisibility(true);
+    httpGet('/gift/accept/' + prize_id,
     function (prize) {
       loadingVisibility(false);
       showOfferContainer();
     },
-    function (error) {
-    }
+    function (error) {}
   );
-}
-
-function addToLoyalCard(prize_id) {
-  
 }
 
 getLastPrize();
@@ -139,7 +145,7 @@ $this->registerJs($js, $this::POS_END);
 
 <script type="text/template" data-template="bonus">
     <h1>You win: {{prize_value}} bonus point!!!</h1>
-    <button class="btn btn-success" onclick="addToLoyalCard({{id}})">Add to Loyal Card</button>
+    <button class="btn btn-success" onclick="accept({{id}})">Add to Loyal Card</button>
     <button class="btn btn-default" onclick="refuse({{id}})">Refuse</button>
 </script>
 
