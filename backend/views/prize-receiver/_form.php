@@ -12,15 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
-
-    <?= $form->field($model, 'prize_type')->textInput() ?>
-
-    <?= $form->field($model, 'prize_value')->textInput() ?>
-
-    <?= $form->field($model, 'prize_status')->textInput() ?>
-
-    <?= $form->field($model, 'date')->textInput() ?>
+    <?= $form->field($model, 'prize_status')->dropDownList($model->statusLabels()) ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

@@ -1,5 +1,6 @@
 <?php
 
+use common\models\db\PrizeReceiver;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -27,13 +28,42 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'user_id',
-            'prize_type',
-            'prize_value',
-            'prize_status',
-            //'date',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'attribute' => 'game_id',
+                'value' => 'game.name'
+            ],
+            [
+                'attribute' => 'user_id',
+                'value' => 'user.username'
+            ],
+            [
+                'attribute' => 'prize_type',
+                'value' => function($model) {
+                    return $model->typeLabels()[$model->prize_type];
+                },
+                'filter' => $searchModel->typeLabels(),
+            ],
+            [
+                'attribute' => 'prize_value',
+                'value' => function($model) {
+                    if ($model->prize_type === PrizeReceiver::PRIZE_TYPE_IS_GIFT)
+                        return $model->gift->name;
+                    if ($model->prize_type === PrizeReceiver::PRIZE_TYPE_IS_MONEY)
+                        return "\${$model->prize_value}";
+                    return $model->prize_value;
+                },
+            ],
+            [
+                'attribute' => 'prize_status',
+                'value' => function($model) {
+                    return $model->statusLabels()[$model->prize_status];
+                },
+                'filter' => $searchModel->statusLabels(),
+            ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view}    {update}'
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

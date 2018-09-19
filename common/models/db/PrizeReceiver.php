@@ -21,6 +21,7 @@ use yii\db\Expression;
  * @property string $updated_date
  * @property Game $game
  * @property User $user
+ * @property Gift $gift
  */
 class PrizeReceiver extends \yii\db\ActiveRecord
 {
@@ -104,6 +105,32 @@ class PrizeReceiver extends \yii\db\ActiveRecord
             'created_date' => Yii::t('app', 'Created Date'),
             'updated_date' => Yii::t('app', 'Updated Date'),
         ];
+    }
+
+    public function typeLabels()
+    {
+        return [
+            self::PRIZE_TYPE_IS_BONUS => Yii::t('app', 'Bonus'),
+            self::PRIZE_TYPE_IS_MONEY => Yii::t('app', 'Money'),
+            self::PRIZE_TYPE_IS_GIFT => Yii::t('app', 'Gift'),
+        ];
+    }
+
+    public function statusLabels()
+    {
+        return [
+            self::STATUS_IS_OFFER => Yii::t('app', 'Offer'),
+            self::STATUS_IS_ACCEPTED => Yii::t('app', 'Accepted'),
+            self::STATUS_IS_SENT => Yii::t('app', 'Sent'),
+            self::STATUS_IS_CONVERTED => Yii::t('app', 'Converted'),
+            self::STATUS_IS_DECLINED => Yii::t('app', 'Declined'),
+            self::STATUS_IS_PROCESSED => Yii::t('app', 'Processed'),
+        ];
+    }
+
+    public function getGift()
+    {
+        return $this->hasOne(Gift::class, ['id' => 'prize_value']);
     }
 
     public function getGame()
