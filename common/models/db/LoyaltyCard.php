@@ -9,10 +9,11 @@ use Yii;
  *
  * @property int $id
  * @property int $user_id
- * @property string $balance
+ * @property int $balance
  */
 class LoyaltyCard extends \yii\db\ActiveRecord
 {
+    const STARTED_BALANCE = 5;
     /**
      * {@inheritdoc}
      */
@@ -22,14 +23,27 @@ class LoyaltyCard extends \yii\db\ActiveRecord
     }
 
     /**
+     * @param User $user
+     * @return self
+     */
+    public static function openNewCardToUser($user)
+    {
+        $model = new self;
+        $model->user_id = $user->primaryKey;
+        $model->balance = self::STARTED_BALANCE;
+        $model->save(false);
+
+        return $model;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['user_id', 'balance'], 'required'],
-            [['user_id'], 'integer'],
-            [['balance'], 'string', 'max' => 100],
+            [['user_id', 'balance'], 'integer'],
         ];
     }
 
