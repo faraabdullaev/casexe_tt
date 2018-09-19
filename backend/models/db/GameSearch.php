@@ -21,6 +21,7 @@ class GameSearch extends Game
             [['id', 'money_balance', 'money_from', 'money_to', 'bonus_from', 'bonus_to', 'money_share', 'gift_share', 'bonus_share'], 'integer'],
             [['name', 'start', 'end'], 'safe'],
             [['conversion_rate'], 'number'],
+            [['is_active'], 'boolean'],
         ];
     }
 
@@ -72,6 +73,7 @@ class GameSearch extends Game
             'money_share' => $this->money_share,
             'gift_share' => $this->gift_share,
             'bonus_share' => $this->bonus_share,
+            'is_active' => $this->is_active,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

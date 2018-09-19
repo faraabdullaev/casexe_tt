@@ -28,10 +28,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
+            'money_balance',
             'start',
             'end',
-            'conversion_rate',
-            //'money_balance',
+            [
+                'attribute' => 'is_active',
+                'value' => 'is_active',
+                'format' => 'boolean',
+                'filter' => $searchModel->isActiveLabels(),
+            ],
             //'money_from',
             //'money_to',
             //'bonus_from',

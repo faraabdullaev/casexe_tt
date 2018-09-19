@@ -26,6 +26,9 @@ class Game extends \yii\db\ActiveRecord
 {
     const MAX_PERCENT = 100;
 
+    const IS_ACTIVE = true;
+    const IS_NOT_ACTIVE = false;
+
     /**
      * {@inheritdoc}
      */
@@ -76,6 +79,14 @@ class Game extends \yii\db\ActiveRecord
             'gift_share' => Yii::t('app', 'Gift Share'),
             'bonus_share' => Yii::t('app', 'Bonus Share'),
             'is_active' => Yii::t('app', 'Active'),
+        ];
+    }
+
+    public function isActiveLabels()
+    {
+        return [
+            self::IS_ACTIVE => Yii::t('app', 'Active'),
+            self::IS_NOT_ACTIVE => Yii::t('app', 'Deactivated'),
         ];
     }
 
