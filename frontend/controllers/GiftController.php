@@ -9,7 +9,6 @@ use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 use yii\rest\Controller;
-use yii\web\HttpException;
 use yii\web\Response;
 
 /**

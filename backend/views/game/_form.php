@@ -16,14 +16,14 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'start')->widget(DateTimePicker::class, [
-        'options' => ['placeholder' => Yii::t('main', 'Game Start')],
+        'options' => ['placeholder' => Yii::t('app', 'Game Start')],
         'pluginOptions' => [
             'autoclose' => true
         ]
     ]) ?>
 
     <?= $form->field($model, 'end')->widget(DateTimePicker::class, [
-        'options' => ['placeholder' => Yii::t('main', 'Game End')],
+        'options' => ['placeholder' => Yii::t('app', 'Game End')],
         'pluginOptions' => [
             'autoclose' => true
         ]

@@ -71,6 +71,10 @@ function showPrizeContainer(prize) {
     template = $('script[data-template="money"]');
   }
   
+  if (prize.prize_type === PRIZE_TYPE_GIFT) {
+    template = $('script[data-template="gift"]');
+  }
+  
   if (!template)
       return;
   
@@ -78,6 +82,7 @@ function showPrizeContainer(prize) {
   var resultHtml =  '';
   resultHtml = templateHtml.replace(/{{prize_value}}/g, prize.prize_value)
                            .replace(/{{prize_type}}/g, prize.prize_type)
+                           .replace(/{{gift_name}}/g, prize.gift ? prize.gift.name : '')
                            .replace(/{{id}}/g, prize.id);
   $('#prize').html(resultHtml).show();
 }
@@ -179,15 +184,19 @@ $this->registerJs($js, $this::POS_END);
 
 
 <script type="text/template" data-template="bonus">
-    <h1>You win: {{prize_value}} bonus point!!!</h1>
+    <h1>You've won: {{prize_value}} bonus point!!!</h1>
     <button class="btn btn-success" onclick="accept({{id}}, {{prize_type}})">Add to Loyal Card</button>
     <button class="btn btn-default" onclick="refuse({{id}})">Refuse</button>
 </script>
 
-<script type="text/template" data-template="gift"></script>
+<script type="text/template" data-template="gift">
+    <h1>You've won GIFT: <b>{{gift_name}}</b> !!!</h1>
+    <button class="btn btn-success" onclick="accept({{id}}, {{prize_type}})">Accept</button>
+    <button class="btn btn-default" onclick="refuse({{id}})">Refuse</button>
+</script>
 
 <script type="text/template" data-template="money">
-    <h1>You win MONEY: {{prize_value}} $$$!!!</h1>
+    <h1>You've won MONEY: <b>{{prize_value}}</b> $$$</h1>
     <button class="btn btn-success" onclick="accept({{id}}, {{prize_type}})">Sent to My Bank Account</button>
     <button class="btn btn-primary" onclick="convertToBonus({{id}})">Add to Loyal Card</button>
     <button class="btn btn-default" onclick="refuse({{id}})">Refuse</button>

@@ -125,9 +125,7 @@ class PrizeReceiver extends \yii\db\ActiveRecord
             $gift->count += 1;
             $gift->save(false);
         } elseif ($this->prize_type === self::PRIZE_TYPE_IS_MONEY) {
-            $game = $this->game;
-            $game->money_balance += $this->prize_value;
-            $game->save(false);
+            $this->game->updateMoneyBalanceAndSave($this->prize_value);
         }
 
         $this->save(false);
@@ -156,6 +154,8 @@ class PrizeReceiver extends \yii\db\ActiveRecord
         $card = LoyaltyCard::findOrCreateUserCard($this->user);
         $card->balance  += floor($this->prize_value * $this->game->conversion_rate);
         $card->save();
+
+        $this->game->updateMoneyBalanceAndSave($this->prize_value);
 
         $this->prize_status = self::STATUS_IS_PROCESSED;
         $this->save();

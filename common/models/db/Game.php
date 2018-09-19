@@ -78,4 +78,10 @@ class Game extends \yii\db\ActiveRecord
             'is_active' => Yii::t('app', 'Active'),
         ];
     }
+
+    public function updateMoneyBalanceAndSave($value)
+    {
+        $this->money_balance += $value;
+        $this->save();
+    }
 }
