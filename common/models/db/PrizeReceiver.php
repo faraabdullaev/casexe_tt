@@ -2,6 +2,7 @@
 
 namespace common\models\db;
 
+use frontend\helpers\BankApiHelper;
 use frontend\helpers\PrizeGeneratorHelper;
 use Yii;
 use yii\behaviors\TimestampBehavior;
@@ -139,6 +140,12 @@ class PrizeReceiver extends \yii\db\ActiveRecord
         if ($this->prize_type === self::PRIZE_TYPE_IS_BONUS) {
             LoyaltyCard::updateUserCardByPrize($this);
             $this->prize_status = self::STATUS_IS_PROCESSED;
+        }
+
+        if ($this->prize_type === self::PRIZE_TYPE_IS_MONEY) {
+            $helper = new BankApiHelper();
+            if ($helper->tryToSendMoney($this->user->bank_account, $this->prize_value))
+                $this->prize_status = self::STATUS_IS_PROCESSED;
         }
 
         $this->save();
