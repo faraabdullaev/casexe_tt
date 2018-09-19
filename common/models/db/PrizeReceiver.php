@@ -18,6 +18,7 @@ use yii\db\Expression;
  * @property int $prize_status
  * @property string $created_date
  * @property string $updated_date
+ * @property Game $game
  */
 class PrizeReceiver extends \yii\db\ActiveRecord
 {
@@ -101,5 +102,27 @@ class PrizeReceiver extends \yii\db\ActiveRecord
             'created_date' => Yii::t('app', 'Created Date'),
             'updated_date' => Yii::t('app', 'Updated Date'),
         ];
+    }
+
+    public function getGame()
+    {
+        return $this->hasOne(Game::class, ['id' => 'game_id']);
+    }
+
+    public function refusePrizeAndUpdateGameBalance()
+    {
+        $this->prize_status = self::STATUS_IS_DECLINED;
+
+        if ($this->prize_type === self::PRIZE_TYPE_IS_GIFT) {
+            $gift = Gift::findOne($this->prize_value);
+            $gift->count += 1;
+            $gift->save(false);
+        } elseif ($this->prize_type === self::PRIZE_TYPE_IS_MONEY) {
+            $game = $this->game;
+            $game->money_balance += $this->prize_value;
+            $game->save(false);
+        }
+
+        $this->save(false);
     }
 }

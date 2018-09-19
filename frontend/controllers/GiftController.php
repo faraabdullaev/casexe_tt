@@ -5,9 +5,11 @@ use common\models\db\Game;
 use common\models\db\Gift;
 use common\models\db\PrizeReceiver;
 use Yii;
+use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 use yii\rest\Controller;
+use yii\web\HttpException;
 use yii\web\Response;
 
 /**
@@ -32,7 +34,6 @@ class GiftController extends Controller
             ],
             'contentNegotiator' => [
                 'class' => ContentNegotiator::class,
-                'only' => ['index', 'view'],
                 'formatParam' => '_format',
                 'formats' => [
                     'application/json' => Response::FORMAT_JSON,
@@ -53,11 +54,18 @@ class GiftController extends Controller
 
         $app = Yii::$app;
         if ($app->request->method === 'POST') {
-            /** @var Game $game */
-            $game = Game::find()->where(['is_active' => true])->orderBy(['id' => SORT_DESC])->one();
-            $new_prize = PrizeReceiver::generateAvailablePrize($app->user->identity, $game);
+            $transaction = $app->db->beginTransaction();
+            try {
+                /** @var Game $game */
+                $game = Game::find()->where(['is_active' => true])->orderBy(['id' => SORT_DESC])->one();
+                $new_prize = PrizeReceiver::generateAvailablePrize($app->user->identity, $game);
 
-            return $update_prize_result($new_prize);
+                $transaction->commit();
+                return $update_prize_result($new_prize);
+            } catch (Exception $exception) {
+                $transaction->rollBack();
+                return null;
+            }
         }
 
         /** @var PrizeReceiver $last_prize */
@@ -73,4 +81,19 @@ class GiftController extends Controller
         return $update_prize_result($last_prize);
     }
 
+    public function actionRefuse($id) {
+        /** @var PrizeReceiver $model */
+        if (!($model = PrizeReceiver::findOne($id)))
+            return null;
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model->refusePrizeAndUpdateGameBalance();
+            $transaction->commit();
+            return $id;
+        } catch (Exception $exception) {
+            $transaction->rollBack();
+            return null;
+        }
+    }
 }

@@ -30,7 +30,7 @@ const httpGet = function (actionUrl, success, error) {
 };
 
 const hideAllContainers = function() {
-  $('#offer-gift, #loading, .prize').hide();
+  $('#offer-gift, #loading, #prize').hide();
 };
 
 const loadingVisibility = function(show) {
@@ -65,10 +65,11 @@ function showPrizeContainer(prize) {
   if (prize.prize_type === PRIZE_TYPE_BONUS) {
     var template = $('script[data-template="bonus"]');
     var templateHtml = template.html();
-    resultHtml = templateHtml.replace(/{{prize_value}}/g, prize.prize_value);
+    resultHtml = templateHtml.replace(/{{prize_value}}/g, prize.prize_value)
+                             .replace(/{{id}}/g, prize.id);
   }
   
-  $('#prize').html(resultHtml);
+  $('#prize').html(resultHtml).show();
 }
 
 function onPlayNowButtonClick() {
@@ -83,6 +84,25 @@ function onPlayNowButtonClick() {
   );
 }
 
+function refuse(prize_id) {
+  if (!confirm('Are you sure?'))
+      return;
+  
+  loadingVisibility(true);
+    httpGet('/gift/refuse/' + prize_id,
+    function (prize) {
+      loadingVisibility(false);
+      showOfferContainer();
+    },
+    function (error) {
+    }
+  );
+}
+
+function addToLoyalCard(prize_id) {
+  
+}
+
 getLastPrize();
 JS;
 
@@ -90,6 +110,7 @@ $this->registerJs($js, $this::POS_END);
 ?>
 
 <div class="site-index">
+
     <div id="offer-gift">
         <div class="jumbotron">
             <h1>Lorem ipsum dolor sit amet!</h1>
@@ -107,6 +128,7 @@ $this->registerJs($js, $this::POS_END);
             <button class="btn btn-success" onclick="onPlayNowButtonClick()">Play now!</button>
         </div>
     </div>
+
     <div id="loading" class="text-center">
         <img src="/images/loading.gif" alt="">
     </div>
@@ -117,7 +139,8 @@ $this->registerJs($js, $this::POS_END);
 
 <script type="text/template" data-template="bonus">
     <h1>You win: {{prize_value}} bonus point!!!</h1>
-
+    <button class="btn btn-success" onclick="addToLoyalCard({{id}})">Add to Loyal Card</button>
+    <button class="btn btn-default" onclick="refuse({{id}})">Refuse</button>
 </script>
 
 <script type="text/template" data-template="gift"></script>
