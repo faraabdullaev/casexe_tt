@@ -1,5 +1,5 @@
 <?php
-namespace frontend\helpers;
+namespace common\helpers;
 
 
 class BankApiHelper
