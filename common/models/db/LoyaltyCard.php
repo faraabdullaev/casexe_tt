@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property int $user_id
  * @property int $balance
+ * @property User $user
  */
 class LoyaltyCard extends \yii\db\ActiveRecord
 {
@@ -77,5 +78,10 @@ class LoyaltyCard extends \yii\db\ActiveRecord
             'user_id' => Yii::t('app', 'User ID'),
             'balance' => Yii::t('app', 'Balance'),
         ];
+    }
+
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

@@ -18,8 +18,8 @@ class LoyaltyCardSearch extends LoyaltyCard
     public function rules()
     {
         return [
-            [['id', 'user_id'], 'integer'],
-            [['balance'], 'safe'],
+            [['id'], 'integer'],
+            [['balance', 'user_id'], 'safe'],
         ];
     }
 
@@ -42,6 +42,7 @@ class LoyaltyCardSearch extends LoyaltyCard
     public function search($params)
     {
         $query = LoyaltyCard::find();
+        $query->joinWith('user');
 
         // add conditions that should always apply here
 
@@ -60,10 +61,10 @@ class LoyaltyCardSearch extends LoyaltyCard
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'user_id' => $this->user_id,
         ]);
 
         $query->andFilterWhere(['like', 'balance', $this->balance]);
+        $query->andFilterWhere(['like', 'user.username', $this->user_id]);
 
         return $dataProvider;
     }
