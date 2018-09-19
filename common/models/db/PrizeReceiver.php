@@ -2,7 +2,7 @@
 
 namespace common\models\db;
 
-use frontend\helpers\BankApiHelper;
+use common\helpers\BankApiHelper;
 use frontend\helpers\PrizeGeneratorHelper;
 use Yii;
 use yii\behaviors\TimestampBehavior;

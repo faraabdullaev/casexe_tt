@@ -101,10 +101,14 @@ class GameController extends Controller
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Exception
+     * @throws \Throwable
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->is_active = Game::IS_NOT_ACTIVE;
+        $model->save();
 
         return $this->redirect(['index']);
     }

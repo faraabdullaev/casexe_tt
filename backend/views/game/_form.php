@@ -13,6 +13,8 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <?= $form->field($model, 'is_active')->radioList($model->isActiveLabels()) ?>
+
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'start')->widget(DateTimePicker::class, [
