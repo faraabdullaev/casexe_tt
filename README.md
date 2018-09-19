@@ -1,60 +1,83 @@
-<p align="center">
-    <a href="https://github.com/yiisoft" target="_blank">
-        <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
-    </a>
-    <h1 align="center">Yii 2 Advanced Project Template</h1>
-    <br>
-</p>
+Prize Lottery (test task)
+=============================
 
-Yii 2 Advanced Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
-developing complex Web applications with multiple tiers.
 
-The template includes three tiers: front end, back end, and console, each of which
-is a separate Yii application.
+INSTALLATION
+------------
 
-The template is designed to work in a team development environment. It supports
-deploying the application in different environments.
+**Init**
+-
+- clone project from repository `git clone https://github.com/faraabdullaev/casexe_tt.git`
+- navigate into project `cd casexe_tt`
+- in terminal, type: `php init`
+- navigate into common configs folder `cd common/config`
+- update DB component in `main-local.php`
 
-Documentation is at [docs/guide/README.md](docs/guide/README.md).
-
-[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2-app-advanced.svg)](https://packagist.org/packages/yiisoft/yii2-app-advanced)
-[![Build Status](https://travis-ci.org/yiisoft/yii2-app-advanced.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-app-advanced)
-
-DIRECTORY STRUCTURE
--------------------
-
+*to use docker copy:*
+```$xslt
+'db' => [
+    'class' => 'yii\db\Connection',
+    'dsn' => 'mysql:host=mysql;dbname=casexe_tt',
+    'username' => 'root',
+    'password' => 'MY_PASSWORD',
+    'charset' => 'utf8',
+],
 ```
-common
-    config/              contains shared configurations
-    mail/                contains view files for e-mails
-    models/              contains model classes used in both backend and frontend
-    tests/               contains tests for common classes    
-console
-    config/              contains console configurations
-    controllers/         contains console controllers (commands)
-    migrations/          contains database migrations
-    models/              contains console-specific model classes
-    runtime/             contains files generated during runtime
-backend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains backend configurations
-    controllers/         contains Web controller classes
-    models/              contains backend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for backend application    
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-frontend
-    assets/              contains application assets such as JavaScript and CSS
-    config/              contains frontend configurations
-    controllers/         contains Web controller classes
-    models/              contains frontend-specific model classes
-    runtime/             contains files generated during runtime
-    tests/               contains tests for frontend application
-    views/               contains view files for the Web application
-    web/                 contains the entry script and Web resources
-    widgets/             contains frontend widgets
-vendor/                  contains dependent 3rd-party packages
-environments/            contains environment-based overrides
-```
+
+**Using Docker**
+-
+
+*Build:*
+- navigate into `cd docker`
+- open a DOCKER terminal 
+- `sudo vi /etc/hosts`
+- add or replace IP with your docker IP: `127.0.0.1	casexe.tt` and `127.0.0.1 admin.casexe.tt`
+- in docker terminal, type: `docker-compose build`
+- in docker terminal, type: `docker-compose up -d`
+
+*Run:*
+- browse into `cd docker`
+- in docker terminal, type: `docker-compose up`
+- open your browser and go to: `http://casexe.tt/` or `http://admin.casexe.tt/`
+
+HOW DOES IT WORK
+------------
+**Preparations**
+
+1. Admin should create a game (status is active) in admin dashboard with following info:
+   - 'name': name of game
+   - 'conversion_rate': rate for conversion money to bonuses for loyalty card
+   - 'money_balance': money limit for current game
+   - 'money_from': min limit for random money prize
+   - 'money_to': max limit for random money prize
+   - 'bonus_from': min limit for random bonus prize
+   - 'bonus_to': max limit for random bonus prize
+   - 'money_share': probability to get money prize
+   - 'gift_share': probability to get gift prize
+   - 'bonus_share': probability to get bonus prize
+
+    `money_share` + `gift_share` + `bonus_share` = `max_percent` = 100
+
+2. Admin should add gift prizes in admin dashboard with following info:
+   - 'name': name of gift
+   - 'game_id': game for which gift is prepared
+   - 'count': count of available gifts
+3. Admin should manually change statuses of gifts to control 'accepted' > 'sent' > 'processed' flow
+4. Admin should run the command to sund bulk of money with N size to Bank API.
+
+
+DIAGRAMS
+------------
+**Flow**
+- ERD   https://ibb.co/b2skKz
+- Process flow   https://ibb.co/fc8QKz
+
+**Prototypes**
+- Game Admin Dashboard   https://ibb.co/e2LQme
+- Prize Dashboard   https://ibb.co/hTMWRe
+- Register   https://ibb.co/dDLM9z
+- Login   https://ibb.co/cX8NXK
+- Receive prize   https://ibb.co/nxxGsK
+- Bonus prize   https://ibb.co/fYONXK
+- Gift prize   https://ibb.co/g6Z7zz
+- Money prize   https://ibb.co/b2shXK
