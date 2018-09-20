@@ -40,6 +40,11 @@ INSTALLATION
 - in docker terminal, type: `docker-compose up`
 - open your browser and go to: `http://casexe.tt/` or `http://admin.casexe.tt/`
 
+*Run Console Command:*
+
+make transaction by N-portion:
+`docker-compose run php7 php yii money-transfer/send-by-portion N`
+
 HOW DOES IT WORK
 ------------
 **Preparations**
@@ -63,7 +68,7 @@ HOW DOES IT WORK
    - 'game_id': game for which gift is prepared
    - 'count': count of available gifts
 3. Admin should manually change statuses of gifts to control 'accepted' > 'sent' > 'processed' flow
-4. Admin should run the command to sund bulk of money with N size to Bank API.
+4. Admin should run the command to send bulk of money with N size to Bank API.
 
 
 DIAGRAMS
