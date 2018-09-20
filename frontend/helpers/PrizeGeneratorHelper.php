@@ -96,7 +96,7 @@ class PrizeGeneratorHelper
         if (!$can_give_gift)
             $coefficients[PrizeReceiver::PRIZE_TYPE_IS_BONUS] += $game->gift_share;
         else
-            $coefficients[PrizeReceiver::PRIZE_TYPE_IS_MONEY] = $game->gift_share;
+            $coefficients[PrizeReceiver::PRIZE_TYPE_IS_GIFT] = $game->gift_share;
 
         return $coefficients;
     }
